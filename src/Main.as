@@ -1,9 +1,7 @@
 package
 {
-	// testing commit
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
-	import flash.display.Graphics;
 	import flash.display.Loader;
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
@@ -15,46 +13,55 @@ package
 	
 	public class Main extends Sprite
 	{
-		// Global variables
-		var PICTURE_1_URL:String = "IMG_1882.jpg";
-		var PICTURE_2_URL:String = "IMG_1883.jpg";
+		/* Global variables */
 		
+		// variables for image(s)
+		const PICTURE_1_URL:String = "IMG_1882.jpg";
+		const PICTURE_2_URL:String = "IMG_1883.jpg";
+		
+		// variables for image file(s)
 		var PICTURE_1_FILE:File;
 		var PICTURE_2_FILE:File;
 		
+		// variables for Loader and URLRequest
 		var myLoader:Loader;
 		var fileRequest:URLRequest;
 		
+		// variables for bitmaps
 		var bmd:BitmapData;
-		var prev_bmd:BitmapData;
 		var image:Bitmap;
 		
+		// variable for canvas
 		var canvas:MovieClip;
 		
 		public function Main()
 		{
-			
+			// Load image into file
 			PICTURE_1_FILE = new File(File.applicationDirectory.nativePath).resolvePath(PICTURE_1_URL);
 			PICTURE_2_FILE = new File(File.applicationDirectory.nativePath).resolvePath(PICTURE_2_URL);
 			
 			// Load image to be displayed
 			myLoader = new Loader();
-			fileRequest = new URLRequest(PICTURE_2_FILE.url);
+			fileRequest = new URLRequest(PICTURE_1_FILE.url);
 			myLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoaded);
 			myLoader.load(fileRequest);
 			
 			// add event listener for the mouse click
 			stage.addEventListener(MouseEvent.MOUSE_UP, _onClick);
 			
+			// display image once it's loaded into the program
 			function onImageLoaded(e:Event):void 
 			{
+				// create the bitmap and set the width/height
 				image = new Bitmap(e.target.content.bitmapData);
 				image.width = stage.stageWidth;
 				image.height = stage.stageHeight;
 				
+				// create the canvas and add it to the stage
 				canvas = new MovieClip();
 				addChild(canvas);
 				
+				// Load bitmap into the canvas, and add image to the canvas
 				canvas.bmap = image.bitmapData;
 				canvas.addChild(image);
 			}
