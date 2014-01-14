@@ -42,7 +42,7 @@ package
 			
 			// Load image to be displayed
 			myLoader = new Loader();
-			fileRequest = new URLRequest(PICTURE_1_FILE.url);
+			fileRequest = new URLRequest(PICTURE_2_FILE.url);
 			myLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoaded);
 			myLoader.load(fileRequest);
 			
@@ -148,7 +148,7 @@ package
 			
 			// draw the circle around the reflector
 			circle.graphics.clear();
-			circle.graphics.beginFill(0xFF0000, 0.5);
+			circle.graphics.beginFill(0xFF0000, 0.0);
 			circle.graphics.lineStyle(2.0);
 			circle.graphics.drawCircle(xCoord, yCoord, radius-10); // -10 normalizes the size of the circle
 			circle.graphics.endFill();
