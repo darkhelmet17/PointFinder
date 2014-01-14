@@ -68,6 +68,18 @@ package
 		}
 		
 		public function _onClick(event:MouseEvent):void {
+			
+			// internal function variables
+			var countX:uint = 0;
+			var xCoord:uint = 0;
+			var width:uint = 0;
+			
+			var countY:uint = 0;
+			var length:uint = 0;
+			var yCoord:uint = 0;
+			
+			var radius:uint = 0;
+			
 			// remove current image being displayed and retrieve it's bitmapData
 			canvas.removeChild(image);
 			bmd = image.bitmapData;
@@ -76,6 +88,8 @@ package
 			var target:* = event.target;
 			var location:Point = new Point(target.mouseX*7.3, target.mouseY*7.3);
 			location = target.localToGlobal(location);
+			
+			var circle:Sprite = new Sprite();
 			
 			// Check pixels in 100x100 box around the mouse position
 			for (var i:uint = location.x-50; i < location.x+50; i++) 
@@ -89,10 +103,56 @@ package
 					var brightness:Number = (0.2126 * r) + (0.7152 * g) + (0.0722 * b);
 					
 					// If "brightness" is greater than a certain amount, color that pixel red
-					if (brightness > 3500000)
+					if (brightness > 3500000) {
 						bmd.setPixel(i,j,0xff0000);
+					}
 				}
 			}
+			
+
+			
+			// finds longest in height
+			for (i = location.x - 50; i < location.x + 50; i++) {
+				countX = 0;
+				for (j = location.y-50; j < location.y+50; j++) {
+					if (bmd.getPixel(i, j) == 0xff0000) {
+						countX++;
+					}
+				}
+				if (countX > length) {
+					length = countX;
+					xCoord = i;
+				}
+			} 
+			
+			// find the longest in width
+			for (j = location.y - 50; j < location.y + 50; j++) {
+				countY = 0;
+				for (i = location.x - 50; i < location.x + 50; i++) {
+					if (bmd.getPixel(i, j) == 0xff0000) {
+						countY++;
+					}
+				}
+				if (countY > width) {
+					width = countY;
+					yCoord = j;
+				}
+			}
+			
+			
+			// Use the longer of width and length to set the radius of the circle
+			if (width > length)
+				radius = width;
+			else
+				radius = length;
+			
+			// draw the circle around the reflector
+			circle.graphics.clear();
+			circle.graphics.beginFill(0xFF0000, 0.5);
+			circle.graphics.lineStyle(2.0);
+			circle.graphics.drawCircle(xCoord, yCoord, radius-10); // -10 normalizes the size of the circle
+			circle.graphics.endFill();
+			bmd.draw(circle);
 			
 			// display updated image
 			image.bitmapData = bmd;
