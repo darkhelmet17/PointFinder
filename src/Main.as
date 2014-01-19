@@ -9,6 +9,8 @@ package
 	import flash.events.MouseEvent;
 	import flash.filesystem.File;
 	import flash.geom.Point;
+	import flash.media.Camera;
+	import flash.media.Video;
 	import flash.net.URLRequest;
 	
 	public class Main extends Sprite
@@ -36,13 +38,14 @@ package
 		
 		public function Main()
 		{
+			
 			// Load image into file
 			PICTURE_1_FILE = new File(File.applicationDirectory.nativePath).resolvePath(PICTURE_1_URL);
 			PICTURE_2_FILE = new File(File.applicationDirectory.nativePath).resolvePath(PICTURE_2_URL);
 			
 			// Load image to be displayed
 			myLoader = new Loader();
-			fileRequest = new URLRequest(PICTURE_2_FILE.url);
+			fileRequest = new URLRequest(PICTURE_1_FILE.url);
 			myLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoaded);
 			myLoader.load(fileRequest);
 			
@@ -97,19 +100,17 @@ package
 				for (var j:uint = location.y-50; j < location.y+50; j++)
 				{
 					// Get RGB values from pixel and calculate the "brightness" of that pixel"
-					var r:uint = 0xff0000 & bmd.getPixel(i,j);
-					var g:uint = 0x00ff00 & bmd.getPixel(i,j);
-					var b:uint = 0x0000ff & bmd.getPixel(i,j);
+					var r:uint = 0xff0000 & bmd.getPixel(i,j); // get only the red value of the pixel
+					var g:uint = 0x00ff00 & bmd.getPixel(i,j); // get only the green value of the pixel
+					var b:uint = 0x0000ff & bmd.getPixel(i,j); // get only the blue value of the pixel
 					var brightness:Number = (0.2126 * r) + (0.7152 * g) + (0.0722 * b);
 					
 					// If "brightness" is greater than a certain amount, color that pixel red
-					if (brightness > 3500000) {
+					if (brightness > 3550000) {
 						bmd.setPixel(i,j,0xff0000);
 					}
 				}
 			}
-			
-
 			
 			// finds longest in height
 			for (i = location.x - 50; i < location.x + 50; i++) {
@@ -140,20 +141,64 @@ package
 			}
 			
 			
+			var widths:uint = 0;
+			var rows:uint = 0;
+			var flag:uint = 0;
+			
+			// find the widths
+			for (i = location.x - 50; i < location.x + 50; i++) {
+				for (j = location.y - 50; j < location.y + 50; j++) {
+					if (bmd.getPixel(i, j) == 0xff0000) {
+						if (flag == 0) {
+							flag = 1;
+							rows++;
+						}
+						widths++;
+					}
+				}
+				flag = 0;
+			}
+			
+			var avgWidth:uint = 1;
+			if (rows > 0)
+				avgWidth = widths / rows;
+			
+			
+			var heights:uint = 0;
+			var cols:uint = 0;
+			
+			// find the heights
+			for (i = location.y - 50; i < location.y + 50; i++) {
+				for (j = location.x - 50; j < location.x + 50; j++) {
+					if (bmd.getPixel(i, j) == 0xff0000) {
+						if (flag == 0) {
+							flag = 1;
+							cols++;
+						}
+						heights++;
+					}
+				}
+				flag = 0;
+			}
+			
+			var avgHeight:uint = 1;
+			if (cols > 1)
+				avgHeight = heights / cols;
+			
 			// Use the longer of width and length to set the radius of the circle
-			if (width > length)
-				radius = width;
+			if (avgWidth > avgHeight)
+				radius = avgHeight;
 			else
-				radius = length;
+				radius = avgWidth;
 			
 			// draw the circle around the reflector
 			circle.graphics.clear();
 			circle.graphics.beginFill(0xFF0000, 0.0);
 			circle.graphics.lineStyle(2.0);
-			circle.graphics.drawCircle(xCoord, yCoord, radius-10); // -10 normalizes the size of the circle
+			circle.graphics.drawCircle(xCoord, yCoord, radius+20); // +10 normalizes the size of the circle
 			circle.graphics.endFill();
 			bmd.draw(circle);
-			
+	
 			// display updated image
 			image.bitmapData = bmd;
 			canvas.addChild(image);
