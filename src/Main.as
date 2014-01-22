@@ -3,96 +3,74 @@ package
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Loader;
+	import flash.display.MovieClip;
 	import flash.display.Sprite;
-	
 	import flash.events.Event;
-	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
-	
 	import flash.filesystem.File;
-	
 	import flash.geom.Point;
-	
+	import flash.media.Camera;
+	import flash.media.Video;
 	import flash.net.URLRequest;
-	
-	import flash.text.TextField;
 	
 	public class Main extends Sprite
 	{
 		/* Global variables */
 		
+		// variables for image(s)
+		const PICTURE_1_URL:String = "IMG_1882.jpg";
+		const PICTURE_2_URL:String = "IMG_1883.jpg";
+		
 		// variables for image file(s)
-		private var PICTURE_FILE:File;
+		var PICTURE_1_FILE:File;
+		var PICTURE_2_FILE:File;
 		
 		// variables for Loader and URLRequest
-		private var myLoader:Loader;
-		private var fileRequest:URLRequest;
+		var myLoader:Loader;
+		var fileRequest:URLRequest;
 		
 		// variables for bitmaps
-		private var bmd:BitmapData;
-		private var image:Bitmap;
+		var bmd:BitmapData;
+		var image:Bitmap;
 		
-		// text field for starting message
-		private var label:TextField;
-		
-		// flag for seeing if the field is still on screen
-		private var flag:Boolean;
-		
-		private var LABEL_TEXT:String = "To begin analyzing images, press any key and select an image file:";
+		// variable for canvas
+		var canvas:MovieClip;
 		
 		public function Main()
 		{
-			// create text field and place it on screen
-			label = new TextField();
-			label.text = LABEL_TEXT;
-			label.width = stage.stageWidth;
-			label.y = stage.stageHeight/2-20;
-			label.x = stage.stageWidth/5;
-			addChild(label);
 			
-			// set flag to indicate text field is currently on the stage
-			flag = true;
+			// Load image into file
+			PICTURE_1_FILE = new File(File.applicationDirectory.nativePath).resolvePath(PICTURE_1_URL);
+			PICTURE_2_FILE = new File(File.applicationDirectory.nativePath).resolvePath(PICTURE_2_URL);
+			
+			// Load image to be displayed
+			myLoader = new Loader();
+			fileRequest = new URLRequest(PICTURE_1_FILE.url);
+			myLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoaded);
+			myLoader.load(fileRequest);
 			
 			// add event listener for the mouse click
 			stage.addEventListener(MouseEvent.MOUSE_UP, _onClick);
-			stage.addEventListener(KeyboardEvent.KEY_UP, keyPressed);
-		}
-		
-		// Load new image when key is pressed
-		private function keyPressed(event:Event) :void {
 			
-			// check if text field is currently being displayed; if so, remove it and set flag to false
-			if (flag) {
-				removeChild(label);
-				flag = false;
+			// display image once it's loaded into the program
+			function onImageLoaded(e:Event):void 
+			{
+				// create the bitmap and set the width/height
+				image = new Bitmap(e.target.content.bitmapData);
+				image.width = stage.stageWidth;
+				image.height = stage.stageHeight;
+				
+				// create the canvas and add it to the stage
+				canvas = new MovieClip();
+				addChild(canvas);
+				
+				// Load bitmap into the canvas, and add image to the canvas
+				canvas.bmap = image.bitmapData;
+				canvas.addChild(image);
 			}
-			
-			// prompt user for the file to be loaded
-			PICTURE_FILE = new File();
-			PICTURE_FILE.addEventListener(Event.SELECT, onSelect);
-			PICTURE_FILE.browse();
 		}
 		
-		// Load image to be displayed
-		private function onSelect(event:Event) :void {
-			myLoader = new Loader();
-			fileRequest = new URLRequest(PICTURE_FILE.url);
-			myLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoaded);
-			myLoader.load(fileRequest);
-		}
-		
-		// display image once it's loaded into the program
-		private function onImageLoaded(e:Event) :void 
-		{
-			// create the bitmap and set the width/height
-			image = new Bitmap(e.target.content.bitmapData);
-			image.width = stage.stageWidth;
-			image.height = stage.stageHeight;
-			
-			addChild(image);
-		}
-		
-		public function _onClick(event:MouseEvent) :void {
+		public function _onClick(event:MouseEvent):void {
 			
 			// internal function variables
 			var countX:uint = 0;
@@ -106,7 +84,7 @@ package
 			var radius:uint = 0;
 			
 			// remove current image being displayed and retrieve it's bitmapData
-			removeChild(image);
+			canvas.removeChild(image);
 			bmd = image.bitmapData;
 			
 			// Get location of mouse click
@@ -217,13 +195,13 @@ package
 			circle.graphics.clear();
 			circle.graphics.beginFill(0xFF0000, 0.0);
 			circle.graphics.lineStyle(2.0);
-			circle.graphics.drawCircle(xCoord, yCoord, radius+25); // +25 normalizes the size of the circle
+			circle.graphics.drawCircle(xCoord, yCoord, radius+20); // +10 normalizes the size of the circle
 			circle.graphics.endFill();
 			bmd.draw(circle);
 	
 			// display updated image
 			image.bitmapData = bmd;
-			addChild(image);
+			canvas.addChild(image);
 		}
 	}
 }
