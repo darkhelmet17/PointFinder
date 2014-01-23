@@ -15,7 +15,7 @@ package
 	import flash.net.URLRequest;
 	import flash.text.TextField;
 	
-	public class Main extends Sprite
+	public class PointFinder extends Sprite
 	{
 		/**
 		 * Global variables
@@ -41,7 +41,7 @@ package
 		// text to be displayed on opening screen
 		private var LABEL_TEXT:String = "To begin analyzing images, press any key and select an image file:";
 		
-		public function Main()
+		public function PointFinder()
 		{
 			// create text field and place it on screen
 			label = new TextField();

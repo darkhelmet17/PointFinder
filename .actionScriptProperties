@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<actionScriptProperties analytics="false" mainApplicationPath="Main.as" projectUUID="5ef92bc7-46f3-4057-a10a-893d492a8ca0" version="11">
+<actionScriptProperties analytics="false" mainApplicationPath="PointFinder.as" projectUUID="5ef92bc7-46f3-4057-a10a-893d492a8ca0" version="11">
   <compiler additionalCompilerArguments="-locale en_US" advancedTelemetry="false" autoRSLOrdering="true" copyDependentFiles="true" fteInMXComponents="false" generateAccessible="false" htmlExpressInstall="true" htmlGenerate="false" htmlHistoryManagement="false" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderPath="bin-debug" removeUnusedRSL="true" sourceFolderPath="src" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="true" useDebugRSLSwfs="true" useFlashSDK="true" verifyDigests="true" warn="true">
     <compilerSourcePath>
       <compilerSourcePathEntry kind="1" linkType="1" path="images"/>
@@ -36,7 +36,7 @@
     <sourceAttachmentPath/>
   </compiler>
   <applications>
-    <application path="Main.as">
+    <application path="PointFinder.as">
       <airExcludes/>
     </application>
   </applications>
