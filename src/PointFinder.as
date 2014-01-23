@@ -36,11 +36,14 @@ package
 		private var label:TextField;
 		
 		// flag for seeing if the field is still on screen
-		private var flag:Boolean;
+		private var textFlag:Boolean;
 		
 		// text to be displayed on opening screen
 		private var LABEL_TEXT:String = "To begin analyzing images, press any key and select an image file:";
 		
+		/**
+		 * Constructor
+		 */
 		public function PointFinder()
 		{
 			// create text field and place it on screen
@@ -52,7 +55,7 @@ package
 			addChild(label);
 			
 			// set flag to indicate text field is currently on the stage
-			flag = true;
+			textFlag = true;
 			
 			// add event listener for the mouse click
 			stage.addEventListener(MouseEvent.MOUSE_UP, _onClick);
@@ -67,9 +70,9 @@ package
 		private function keyPressed(event:Event) :void {
 			
 			// check if text field is currently being displayed; if so, remove it and set flag to false
-			if (flag) {
+			if (textFlag) {
 				removeChild(label);
-				flag = false;
+				textFlag = false;
 			}
 			
 			// prompt user for the file to be loaded
