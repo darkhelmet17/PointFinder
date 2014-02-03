@@ -41,6 +41,8 @@ package
 		// text to be displayed on opening screen
 		private var LABEL_TEXT:String = "To begin analyzing images, press any key and select an image file:";
 		
+		private const BRIGHTNESS_THRESHOLD:uint = 3550000;
+		
 		/**
 		 * Constructor
 		 */
@@ -158,7 +160,7 @@ package
 				for (var j:uint = location.y - 50; j < location.y + 50; j++){
 					
 					// If "brightness" is greater than a certain amount, color that pixel red
-					if (calcBrightness(bmd.getPixel(i, j)) > 3550000) {
+					if (calcBrightness(bmd.getPixel(i, j)) > BRIGHTNESS_THRESHOLD) {
 						bmd.setPixel(i,j,0xff0000); // set the pixel to red
 						totalPixels++; //increment the total number of pixels by 1
 						sumXCoords += i; // add the i coordinate to running total
