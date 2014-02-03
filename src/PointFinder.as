@@ -41,7 +41,21 @@ package
 		// text to be displayed on opening screen
 		private var LABEL_TEXT:String = "To begin analyzing images, press any key and select an image file:";
 		
-		private const BRIGHTNESS_THRESHOLD:uint = 3550000;
+		// brightness threshold
+		private const BRIGHTNESS_THRESHOLD:uint = 3500000;
+		
+		// box bound around mouse click area
+		private const BOUNDS:uint = 60;
+		
+		// scaling factors for mouse click positions
+		private const X_SCALE:Number = 2.33;
+		private const Y_SCALE:Number = 2.15;
+		
+		// color(s)
+		private const RED:uint = 0xff0000;
+		private const GREEN:uint = 0x00ff00;
+		private const BLUE:uint = 0x0000ff;
+		
 		
 		/**
 		 * Constructor
@@ -104,7 +118,7 @@ package
 		{
 			// create the bitmap and set the width/height
 			image = new Bitmap(e.target.content.bitmapData);
-			image.width = stage.stageWidth;
+			image.width = stage.stageWidth+50;
 			image.height = stage.stageHeight;
 			
 			addChild(image);
@@ -150,18 +164,19 @@ package
 			
 			// Get location of mouse click
 			var target:* = event.target;
-			var location:Point = new Point(target.mouseX*7.3, target.mouseY*7.3);
+			//var location:Point = new Point(target.mouseX*7.3, target.mouseY*7.3);
+			var location:Point = new Point(target.mouseX * X_SCALE, target.mouseY * Y_SCALE);
 			location = target.localToGlobal(location);
 			
 			var circle:Sprite = new Sprite();
 			
 			// Check pixels in 100x100 pixel box around the mouse position at the time it was clicked
-			for (var i:uint = location.x - 50; i < location.x + 50; i++) {
-				for (var j:uint = location.y - 50; j < location.y + 50; j++){
+			for (var i:uint = location.x - BOUNDS; i < location.x + BOUNDS; i++) {
+				for (var j:uint = location.y - BOUNDS; j < location.y + BOUNDS; j++){
 					
 					// If "brightness" is greater than a certain amount, color that pixel red
 					if (calcBrightness(bmd.getPixel(i, j)) > BRIGHTNESS_THRESHOLD) {
-						bmd.setPixel(i,j,0xff0000); // set the pixel to red
+						bmd.setPixel(i,j,RED); // set the pixel to red
 						totalPixels++; //increment the total number of pixels by 1
 						sumXCoords += i; // add the i coordinate to running total
 						sumYCoords += j; // add the j coordinate to running total
@@ -177,17 +192,17 @@ package
 			/* find the average width of the hilighted area  */
 			
 			// loop through each row first
-			for (i = location.x - 50; i < location.x + 50; i++) {
+			for (i = location.x - BOUNDS; i < location.x + BOUNDS; i++) {
 				
 				// reset internally used variables
 				currentWidth = 0;
 				flag = false;
 				
 				// loop through each column in the row
-				for (j = location.y - 50; j < location.y + 50; j++) {
+				for (j = location.y - BOUNDS; j < location.y + BOUNDS; j++) {
 					
 					// check for marked pixel
-					if (bmd.getPixel(i, j) == 0xff0000) {
+					if (bmd.getPixel(i, j) == RED) {
 						currentWidth++; // increment the width of this row by 1
 						flag = true; // set a flag so we know this row has at least one marked pixel in it
 					}
@@ -211,17 +226,17 @@ package
 			/* find the average height of the hilighted area */
 			
 			// loop through each column first
-			for (j = location.y - 50; j < location.y + 50; j++) {
+			for (j = location.y - BOUNDS; j < location.y + BOUNDS; j++) {
 				
 				// reset internally used variables
 				currentHeight = 0;
 				flag = false;
 				
 				// loop through each row in the column
-				for(i = location.x - 50; i < location.x + 50; i++) {
+				for(i = location.x - BOUNDS; i < location.x + BOUNDS; i++) {
 					
 					// check for marked pixel
-					if (bmd.getPixel(i, j) == 0xff0000) {
+					if (bmd.getPixel(i, j) == RED) {
 						currentHeight++; // increment the height of this column by 1
 						flag = true; // set flag to true so that we know there is at least one marked pixel in this column
 					}
@@ -243,7 +258,7 @@ package
 			
 			// draw the circle around the reflector
 			circle.graphics.clear();
-			circle.graphics.beginFill(0xFF0000, 0.0);
+			circle.graphics.beginFill(RED, 0.0);
 			circle.graphics.lineStyle(2.0);
 			circle.graphics.drawCircle(x, y, radius-10); // -10 normalizes the radius of the circle
 			circle.graphics.endFill();
@@ -260,9 +275,9 @@ package
 		 */
 		private function calcBrightness(pixel:uint) :Number {
 			
-			var r:uint = 0xff0000 & pixel; // get only the red value of the pixel
-			var g:uint = 0x00ff00 & pixel; // get only the green value of the pixel
-			var b:uint = 0x0000ff & pixel; // get only the blue value of the pixel
+			var r:uint = RED & pixel; // get only the red value of the pixel
+			var g:uint = GREEN & pixel; // get only the green value of the pixel
+			var b:uint = BLUE & pixel; // get only the blue value of the pixel
 			
 			return (0.2126 * r) + (0.7152 * g) + (0.0722 * b)
 		}
