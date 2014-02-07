@@ -42,7 +42,7 @@ package
 		private var LABEL_TEXT:String = "To begin analyzing images, press any key and select an image file:";
 		
 		// brightness threshold
-		private const BRIGHTNESS_THRESHOLD:uint = 3500000;
+		private const BRIGHTNESS_THRESHOLD:uint = 3400000;
 		
 		// box bound around mouse click area
 		private const BOUNDS:uint = 60;
@@ -260,7 +260,7 @@ package
 			circle.graphics.clear();
 			circle.graphics.beginFill(RED, 0.0);
 			circle.graphics.lineStyle(2.0);
-			circle.graphics.drawCircle(x, y, radius-10); // -10 normalizes the radius of the circle
+			circle.graphics.drawCircle(x, y, radius-1); // -10 normalizes the radius of the circle
 			circle.graphics.endFill();
 			bmd.draw(circle);
 	
